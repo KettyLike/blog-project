@@ -1,0 +1,50 @@
+body {
+    background-color: #f8f9fa;
+    font-family: "Segoe UI", sans-serif;
+    color: #333;
+}
+
+h1, h2 {
+    color: #0056b3;
+    margin-top: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+}
+
+footer {
+    border-top: 1px solid #ccc;
+    margin-top: 40px;
+    padding-top: 10px;
+    text-align: center;
+    color: #888;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.article {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+button, .btn {
+    margin-top: 10px;
+}
+
+#id_prompt, #generate_style, #generateBtn {
+    display: block;
+    margin-bottom: 15px;
+    max-width: 100%;
+}
+
+#id_prompt {
+    width: 100%;
+    box-sizing: border-box;
+}

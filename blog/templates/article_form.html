@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}{% if form.instance.pk %}Редагувати{% else %}Нова{% endif %} стаття{% endblock %}
+{% block content %}
+<h2>{% if form.instance.pk %}Редагування статті{% else %}Нова стаття{% endif %}</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="{{ form.title.id_for_label }}" class="form-label">Заголовок:</label>
+      {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+      <label for="{{ form.content.id_for_label }}" class="form-label">Текст статті:</label>
+      {{ form.content }}
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="id_prompt">Тема для генерації:</label>
+        <input type="text" id="id_prompt" placeholder="Наприклад: Користь штучного інтелекту" class="form-control">
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="generate_style">Стиль:</label>
+        <select id="generate_style" class="form-select">
+            <option value="standard">Стандартний</option>
+            <option value="short_news">Коротко в стилі новин</option>
+            <option value="blog_post">Блоговий стиль</option>
+        </select>
+    </div>
+
+    <div class="form-group mb-4">
+        <button type="button" id="generateBtn" class="btn btn-primary">Згенерувати текст</button>
+    </div>
+
+
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', function () {
+        const prompt = document.getElementById('id_prompt').value;
+        const style = document.getElementById('generate_style').value;
+        if (!prompt) {
+            alert("Введіть тему для генерації");
+            return;
+        }
+
+        fetch("{% url 'generate_article_text' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `prompt=${encodeURIComponent(prompt)}&style=${style}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.text) {
+                document.getElementById("id_content").value = data.text;
+            } else {
+                alert("Помилка: " + data.error);
+            }
+        })
+        .catch(err => {
+            console.error("Помилка fetch:", err);
+            alert("Запит не вдався");
+        });
+    });
+    </script>
+
+    <label for="id_images">Додати зображення:</label>
+    <input type="file" name="images" multiple accept="image/*"><br><br>
+
+    {% if images %}
+        <h3>Існуючі зображення:</h3>
+        {% for img in images %}
+            <div style="margin-bottom:10px;">
+                <img src="{{ img.image.url }}" alt="Image" style="max-width: 200px;"><br>
+                <label>
+                    <input type="checkbox" name="delete_images" value="{{ img.id }}">
+                    Видалити
+                </label>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+    <a href="{% url 'article_list' %}" class="btn btn-primary ms-2">Повернутися</a>
+</form>
+{% endblock %}

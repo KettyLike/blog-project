@@ -1,0 +1,15 @@
+# Секрети та середовища
+.env
+*.sqlite3
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Docker
+*.pid
+
+# Virtualenv
+venv/

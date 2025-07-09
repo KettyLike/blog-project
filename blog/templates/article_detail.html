@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}{{ article.title }}{% endblock %}
+{% block content %}
+<h2>{{ article.title }}</h2>
+<p class="article-meta">
+    Автор: {{ article.author.username }} | {{ article.created_at|date:"d.m.Y H:i" }}
+</p>
+
+<div class="content">
+    {{ article.content }}
+</div>
+
+<div style="margin-bottom: 20px;">
+    {% for image in article.images.all %}
+        <img src="{{ image.image.url }}" style="max-width: 200px; margin-right:10px; margin-bottom:10px;">
+    {% endfor %}
+</div>
+
+{% if user == article.author %}
+    <div class="actions mt-3">
+        <a href="{% url 'article_edit' article.pk %}" class="btn btn-primary me-2">Редагувати</a>
+
+        <form method="post" action="{% url 'article_delete' article.pk %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Видалити</button>
+        </form>
+    </div>
+{% endif %}
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'article_list' %}">← Назад до списку</a>
+</div>
+{% endblock %}
